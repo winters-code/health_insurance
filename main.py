@@ -2,9 +2,6 @@
 from argument import HIArgs, args_zips
 from cca import get_cca
 from uhc import get_uhc
-# from cca2 import get_cca2
-
-# get_cca2(test_args)
 
 def get_option(prompt: str, options: list) -> int:
     print(prompt)
