@@ -2,6 +2,8 @@
 from argument import HIArgs, args_zips
 from cca import get_cca
 from uhc import get_uhc
+import matplotlib.pyplot as plt
+import numpy as np
 
 def get_option(prompt: str, options: list) -> int:
     print(prompt)
@@ -53,10 +55,15 @@ args = HIArgs(hh_income, args_zips[zip_code], family)
 cca = get_cca(args)
 uhc = get_uhc(args)
 
+categories = []
+data = []
+
 print()
 if cca:
     print(f'Covered California, Bronze: {cca.bronze}')
     print(f'Covered California, Silver: {cca.silver}')
+    categories += ['CCA Bronze', 'CCA Silver']
+    data += [cca.bronze, cca.silver]
 else:
     print('Covered California does not cover your conditions.')
 print()
@@ -65,8 +72,17 @@ if uhc:
     print(f'United Healthcare, Silver: {uhc.silver}')
     print(f'United Healthcare, Gold: {uhc.gold}')
     print(f'United Healthcare, Platinum: {uhc.platinum}')
+    categories += ['UHC Bronze', 'UHC Silver', 'UHC Gold', 'UHC Platinum']
+    data += [uhc.bronze, uhc.silver, uhc.gold, uhc.platinum]
 else:
     print('United Healthcare does not cover your conditions.')
+
+fig, ax = plt.subplots()
+
+p = ax.bar(categories, np.array(data), 0.6)
+ax.bar_label(p, label_type='center')
+ax.set_title('Costs of premiums')
+plt.show()
 
 print()
 print('Here are the plans you can take. If you earn more money or get sick less often, a higher-tiered plan would be best for you. The more expensive the plan, the better it is for saving up for a big injury or illness.')
