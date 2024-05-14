@@ -39,16 +39,35 @@ def get_family_member():
 
 hh_income = get_number("What is your yearly annual income?")
 zip_code  = get_option("What is your zip code?", args_zips)
+print('\nTime for family members.')
 family = []
 family.append(get_family_member())
 while True:
+    print()
     cont = get_option("Do you want to add another family member?", ["Yes", "No"])
     if cont == 1: break
     family.append(get_family_member())
 
 args = HIArgs(hh_income, args_zips[zip_code], family)
 
-print('Covered California')
-print(repr(get_cca(args)))
-print('United Healthcare')
-print(repr(get_uhc(args)))
+cca = get_cca(args)
+uhc = get_uhc(args)
+
+print()
+if cca:
+    print(f'Covered California, Bronze: {cca.bronze}')
+    print(f'Covered California, Silver: {cca.silver}')
+else:
+    print('Covered California does not cover your conditions.')
+print()
+if uhc:
+    print(f'United Healthcare, Bronze: {uhc.bronze}')
+    print(f'United Healthcare, Silver: {uhc.silver}')
+    print(f'United Healthcare, Gold: {uhc.gold}')
+    print(f'United Healthcare, Platinum: {uhc.platinum}')
+else:
+    print('United Healthcare does not cover your conditions.')
+
+print()
+print('Here are the plans you can take. If you earn more money or get sick less often, a higher-tiered plan would be best for you. The more expensive the plan, the better it is for saving up for a big injury or illness.')
+print('Stay safe!')

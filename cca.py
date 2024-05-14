@@ -38,11 +38,6 @@ def get_cca(args):
     payload["formValues"]["householdIncome"] = args.income
 
     res = requests.post(url, headers=header, json=payload)
-    print(res)
-    with open('a.json', 'w') as f:
-        f.write(repr(res))
-        f.close()
-        print('wrote')
 
     if res.status_code != 200:
         return None

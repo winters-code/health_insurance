@@ -62,10 +62,6 @@ def get_uhc(args):
         res = requests.get(url, params=payload, headers=header)
         data = res.json()
 
-        with open('a.json', 'w') as f:
-            f.write(json.dumps(data))
-            f.close()
-
         resu = HIRes()
         resu.bronze = data[0]["planRates"][0]["rateAmount"]
         resu.silver = data[1]["planRates"][0]["rateAmount"]
@@ -79,6 +75,4 @@ def get_uhc(args):
         for i, f in enumerate(args.family):
             url += einfo2.format(ind=i, gender='M' if f[1] else 'F', dob=args.get_dob(i))
         
-        print(url)
         res = requests.get(url, headers=header)
-        print(res)
