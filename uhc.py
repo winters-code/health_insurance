@@ -13,6 +13,7 @@ from argument import HIRes
 
 today = datetime.datetime.now(datetime.timezone.utc).today()
 tomorrow = today + datetime.timedelta(days=1)
+ed = today + datetime.timedelta(days=7)
 
 payload = {
     'isChildAlone': 'false',
@@ -33,7 +34,9 @@ payload = {
     'countyFipsCode': '06085',
     'state': 'CA'
 }
-url = 'https://www.uhc.com/shop/api/products'
+url = 'https://www.uhc.com/shop/api/products?'
+einfo = f'isChildAlone=false&paymentModes[]=M&applicationType=&isWindowShopping=false&currentDate={today.strftime('%Y-%m-%d')}&quoteSource=UHC Store - DTC&applicationSource=UHC Store&effectiveDate={ed.strftime('%Y-%m-%d')}&vueBrokerId=&userType=CONSUMER&localeCode=en-US&zipCode=94040&county=SANTA CLARA&countyFipsCode=06085&state=CA'
+einfo2 = '&applicants[{ind}].applicantTypeCode=P&applicants[{ind}].gender={gender}&applicants[{ind}].birthDate={dob}&applicants[{ind}].isTobacco=false&applicants[{ind}].healthClassName=Preferred'
 header = {
     'Accept':'application/json',
     'Referer':'https://www.uhc.com/shop/individuals-families/en/quote/plans/hospitalindemnity?leadsourcename=UHC-IandF&tfn=1-800-557-6718',
@@ -47,26 +50,35 @@ header = {
 }
 
 def get_uhc(args):
-    for i, f in enumerate(args.family):
-        payload[f'applicants[{i}].applicantTypeCode'] = 'P'
-        payload[f'applicants[{i}].gender'] = 'M' if f[1] else 'F'
-        payload[f'applicants[{i}].isTobacco'] = False
-        payload[f'applicants[{i}].birthDate'] = args.get_dob(i)
-        payload[f'applicants[{i}].healthClassName'] = 'Preferred'
+    global url
+    try:
+        for i, f in enumerate(args.family):
+            payload[f'applicants[{i}].applicantTypeCode'] = 'P'
+            payload[f'applicants[{i}].gender'] = 'M' if f[1] else 'F'
+            payload[f'applicants[{i}].isTobacco'] = False
+            payload[f'applicants[{i}].birthDate'] = args.get_dob(i)
+            payload[f'applicants[{i}].healthClassName'] = 'Preferred'
 
-    res = requests.get(url, params=payload, headers=header)
-    data = res.json()
+        res = requests.get(url, params=payload, headers=header)
+        data = res.json()
 
-    with open('a.json', 'w') as f:
-        f.write(json.dumps(data))
-        f.close()
+        with open('a.json', 'w') as f:
+            f.write(json.dumps(data))
+            f.close()
 
-    resu = HIRes()
-    resu.bronze = data[0]["planRates"][0]["rateAmount"]
-    resu.silver = data[1]["planRates"][0]["rateAmount"]
-    resu.gold = data[-2]["planRates"][0]["rateAmount"]
-    resu.platinum = data[-1]["planRates"][0]["rateAmount"]
+        resu = HIRes()
+        resu.bronze = data[0]["planRates"][0]["rateAmount"]
+        resu.silver = data[1]["planRates"][0]["rateAmount"]
+        resu.gold = data[-2]["planRates"][0]["rateAmount"]
+        resu.platinum = data[-1]["planRates"][0]["rateAmount"]
 
-    return resu
+        return resu
+    except:
+        url += einfo
 
-    
+        for i, f in enumerate(args.family):
+            url += einfo2.format(ind=i, gender='M' if f[1] else 'F', dob=args.get_dob(i))
+        
+        print(url)
+        res = requests.get(url, headers=header)
+        print(res)

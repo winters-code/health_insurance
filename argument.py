@@ -13,8 +13,19 @@ class HIArgs():
     def __init__(self, income, zip_code, family) -> None:
         self.income = income
         self.zip = zip_code
-        self.family = family
-        self.county = counties[str(self.zip)]
+        f_buffer = family
+        self.county = "Santa Clara"
+        
+        max_index = 0
+        max_val = 0
+        for i, f in enumerate(f_buffer):
+            if f[0] > max_val:
+                max_val = f[0]
+                max_index = i
+        fm = f_buffer[max_index]
+        del f_buffer[max_index]
+        f_buffer.insert(0, fm)
+        self.family = f_buffer
     
     def get_dob(self, i):
         return f'{2024-(self.family[i][0])}-05-10'
@@ -40,3 +51,5 @@ class HIRes():
              - Silver: {self.silver}, d: {self.silver_deductible}, c: {self.silver_copay}
              - Gold: {self.gold}, d: {self.gold_deductible}, c: {self.gold_copay}
              - Platinum: {self.platinum}, d: {self.platinum_deductible}, c: {self.platinum_copay}"""
+
+args_zips = (94039, 94040, 94041, 94042, 94043, 94085, 94303)
