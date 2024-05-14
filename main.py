@@ -40,16 +40,16 @@ def get_family_member():
         True if get_option('What gender is this family member?', ['Male', 'Female']) == 0 else False
     ]
 
-# hh_income = get_number("What is your yearly annual income?")
-# zip_code  = get_option("What is your zip code?", args_zips)
-# family = []
-# family.append(get_family_member())
-# while True:
-#     cont = get_option("Do you want to add another family member?", ["Yes", "No"])
-#     if cont == 1: break
-#     family.append(get_family_member())
+hh_income = get_number("What is your yearly annual income?")
+zip_code  = get_option("What is your zip code?", args_zips)
+family = []
+family.append(get_family_member())
+while True:
+    cont = get_option("Do you want to add another family member?", ["Yes", "No"])
+    if cont == 1: break
+    family.append(get_family_member())
 
-args = HIArgs(100000, 94040, [(10, True), (40, False)])
+args = HIArgs(hh_income, args_zips[zip_code], family)
 
 print('Covered California')
 print(repr(get_cca(args)))
